@@ -1,0 +1,39 @@
+@box-filter-padding: 10px;
+
+.box-filter {
+    margin-bottom: @margin-gap;
+    padding: @box-filter-padding;
+
+    border: 1px solid @color-border;
+
+    &__price {
+        margin-bottom: @margin-gap;
+    }
+
+    &__choice {
+        margin-bottom: @margin-gap/2;
+
+        &__title {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 10px 5px 0;
+
+            font-weight: bold;
+        }
+    }
+
+    &__parameters {
+        &__title {
+            display: block;
+            padding: @box-filter-padding;
+            margin: 0 -@box-filter-padding @margin-gap/2;
+
+            font-weight: bold;
+            background: @color-light;
+        }
+    }
+
+    &__action {
+        text-align: right;
+    }
+}

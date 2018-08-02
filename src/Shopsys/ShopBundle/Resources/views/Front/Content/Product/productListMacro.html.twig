@@ -1,0 +1,64 @@
+{% macro list(products, listCssClass, productHeadingTagName) %}
+    {% import '@ShopsysShop/Front/Inline/Product/productFlagsMacro.html.twig' as productFlags %}
+    {% set domain = getDomain() %}
+
+    <ul class="list-products js-product-list {{ listCssClass|default('') }}">
+        {% for product in products %}
+            <li class="list-products__item js-list-products-item">
+                <div class="list-products__item__in">
+                    <a href="{{ url('front_product_detail', {'id': product.id}) }}" class="list-products__item__block">
+                        <{{ productHeadingTagName|default('h2') }} class="list-products__item__title js-list-products-item-title">
+                            {{ product.name }}
+                        </{{ productHeadingTagName|default('h2') }}>
+
+                        <div class="list-products__item__image">
+                            {{ image(product, { size: 'list', alt: product.name }) }}
+                            {{ productFlags.list(product, 'in-flag--in-list') }}
+                        </div>
+
+                        <div class="list-products__item__info">
+                            <p class="list-products__item__info__description">
+                                {{ product.getShortDescription(domain.id) }}
+                            </p>
+                            {% set productSellingPrice = getProductSellingPrice(product) %}
+                            {% if productSellingPrice is not null %}
+                                <div class="list-products__item__info__price">
+                                    <div class="list-products__item__info__price__item list-products__item__info__price__item--main">
+                                        {% if productSellingPrice.priceFrom %}
+                                            {{ 'from %price%'|trans({'%price%': productSellingPrice.priceWithVat|price}) }}
+                                        {% else %}
+                                            {{ productSellingPrice.priceWithVat|price }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="list-products__item__info__price__item">
+                                        {% if productSellingPrice.priceFrom %}
+                                            {{ 'from %price%'|trans({'%price%': productSellingPrice.priceWithoutVat|price}) }}
+                                        {% else %}
+                                            {{ productSellingPrice.priceWithoutVat|price }}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            <div class="list-products__item__info__availability">
+                                {{ product.calculatedAvailability.getName }}
+                            </div>
+                        </div>
+                    </a>
+
+                    <div class="list-products__item__action">
+                        {% if not product.isMainVariant %}
+                            {{ render(controller('ShopsysShopBundle:Front/Cart:addProductForm',{
+                                product: product
+                            }
+
+                            )) }}
+                        {% else %}
+                            <a href="{{ url('front_product_detail', { id: product.id }) }}" class="btn btn--success">{{ 'Choose variant'|trans }}</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
